@@ -49,6 +49,7 @@ body {
 
 .front {
   background: #FAB942 url('../img/question.gif') no-repeat center center / contain;
+  transform: rotateY(0deg);
 }
 
 .back {
@@ -58,6 +59,7 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
+  transform: rotateY(180deg);
 }
 
 .selected {
@@ -68,3 +70,4 @@ body {
 .match .front {
   background: #6589F9 !important;
 }
+

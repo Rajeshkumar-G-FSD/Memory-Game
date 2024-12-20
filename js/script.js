@@ -49,7 +49,7 @@ var firstGuess = '';
 var secondGuess = '';
 var count = 0;
 var previousTarget = null;
-var delay = 1200;  // Time delay for flipping back non-matching cards
+var delay = 1200; // Time delay for flipping back non-matching cards
 
 // Game container
 var game = document.getElementById('game');
@@ -83,7 +83,8 @@ game.appendChild(grid);
 
 // Function to create the board with shuffled cards
 function createBoard() {
-  grid.innerHTML = '';  // Clear any existing grid
+  console.log('Creating game board...');
+  grid.innerHTML = ''; // Clear any existing grid
   gameGrid = cardsArray.concat(cardsArray).sort(function () {
     return 0.5 - Math.random();
   });
@@ -91,7 +92,7 @@ function createBoard() {
   // Loop through the shuffled cards and create card elements
   gameGrid.forEach(function (item) {
     var name = item.name,
-        img = item.img;
+      img = item.img;
 
     var card = document.createElement('div');
     card.classList.add('card');
@@ -116,24 +117,11 @@ function createBoard() {
     back.style.height = '100%';
     back.style.backgroundSize = 'cover';
 
-    // Add hover effect on card
-    card.addEventListener('mouseover', function () {
-      if (!card.classList.contains('selected') && !card.classList.contains('match')) {
-        front.style.backgroundColor = '#bbb';  // Change color on hover
-      }
-    });
-
-    card.addEventListener('mouseleave', function () {
-      if (!card.classList.contains('selected') && !card.classList.contains('match')) {
-        front.style.backgroundColor = '#ddd';  // Reset color when hover ends
-      }
-    });
-
-    // Append front and back to card element
     grid.appendChild(card);
     card.appendChild(front);
     card.appendChild(back);
   });
+  console.log('Game board created.');
 }
 
 // Initialize the game board by calling the createBoard function
@@ -143,61 +131,66 @@ createBoard();
 grid.addEventListener('click', function (event) {
   var clicked = event.target;
 
-  // Prevent invalid clicks (clicking on the grid itself or already flipped/matched cards)
+  // Prevent invalid clicks
   if (
-    clicked.nodeName === 'SECTION' || 
-    clicked === previousTarget || 
-    clicked.parentNode.classList.contains('selected') || 
+    clicked.nodeName === 'SECTION' ||
+    clicked === previousTarget ||
+    clicked.parentNode.classList.contains('selected') ||
     clicked.parentNode.classList.contains('match')
   ) {
+    console.log('Invalid click detected.');
     return;
   }
 
   if (count < 2) {
     count++;
     const card = clicked.parentNode;
-    card.classList.add('flipped');  // Flip the card to show its face
+    card.classList.add('flipped');
+    console.log(`Card clicked: ${card.dataset.name}`);
 
     if (count === 1) {
       firstGuess = card.dataset.name;
       card.classList.add('selected');
+      console.log(`First guess: ${firstGuess}`);
     } else {
       secondGuess = card.dataset.name;
       card.classList.add('selected');
+      console.log(`Second guess: ${secondGuess}`);
 
       // Check if both guesses match
       if (firstGuess && secondGuess) {
         if (firstGuess === secondGuess) {
-          // If matched, keep them flipped
+          console.log('Match found!');
           setTimeout(function () {
             var selected = document.querySelectorAll('.selected');
             selected.forEach(function (card) {
-              card.classList.add('match');  // Keep matched cards visible
+              card.classList.add('match');
             });
             selected.forEach(function (card) {
-              card.classList.remove('selected');  // Remove 'selected' class
+              card.classList.remove('selected');
             });
-            resetGuesses();  // Reset guesses
+            resetGuesses();
           }, delay);
         } else {
-          // If no match, flip back the cards
+          console.log('No match found.');
           setTimeout(function () {
             var selected = document.querySelectorAll('.selected');
             selected.forEach(function (card) {
-              card.classList.remove('flipped');  // Flip the card back
-              card.classList.remove('selected');  // Remove 'selected' class
+              card.classList.remove('flipped');
+              card.classList.remove('selected');
             });
-            resetGuesses();  // Reset guesses
+            resetGuesses();
           }, delay);
         }
       }
     }
-    previousTarget = clicked;  // Store the last clicked card
+    previousTarget = clicked;
   }
 });
 
 // Reset guesses and count
 var resetGuesses = function resetGuesses() {
+  console.log('Resetting guesses.');
   firstGuess = '';
   secondGuess = '';
   count = 0;
@@ -206,10 +199,11 @@ var resetGuesses = function resetGuesses() {
 
 // Reset game functionality when the 'Restart Game' button is clicked
 resetButton.addEventListener('click', function () {
+  console.log('Game restarted.');
   firstGuess = '';
   secondGuess = '';
   count = 0;
   previousTarget = null;
-  grid.innerHTML = '';  // Clear existing grid
-  createBoard();  // Recreate the board with shuffled cards
+  grid.innerHTML = ''; // Clear existing grid
+  createBoard(); // Recreate the board with shuffled cards
 });
